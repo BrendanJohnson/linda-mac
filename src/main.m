@@ -4,7 +4,6 @@
 const NSString*         kConnectionName = @"Hallelujah_1_Connection";
 IMKServer*              server;
 IMKCandidates*          sharedCandidates;
-IMKCandidates*          subCandidates;
 BOOL                    defaultEnglishMode;
 
 
@@ -23,9 +22,6 @@ int main(int argc, char *argv[])
         return -1;
     }
     
-    //db = shuangpinDB();
-
-        
     [[NSBundle mainBundle] loadNibNamed:@"MainMenu"
                                   owner:[NSApplication sharedApplication]
                         topLevelObjects:nil];

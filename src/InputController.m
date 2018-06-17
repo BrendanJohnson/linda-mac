@@ -2,7 +2,6 @@
 #import "NSString_QuickPairs.h"
 
 extern IMKCandidates*           sharedCandidates;
-extern IMKCandidates*           subCandidates;
 extern BOOL                     defaultEnglishMode;
 
 typedef NSInteger KeyCode;
@@ -15,17 +14,23 @@ KEY_ESC = 53,
 KEY_BACKSPACE = 117,
 KEY_MOVE_LEFT = 123,
 KEY_MOVE_RIGHT = 124,
-KEY_MOVE_DOWN = 125;
+KEY_MOVE_DOWN = 125,
+KEY_NUM1 = 18,
+KEY_NUM2 = 19,
+KEY_NUM3 = 20,
+KEY_NUM4 = 21,
+KEY_NUM5 = 23,
+KEY_NUM6 = 22,
+KEY_NUM7 = 26,
+KEY_NUM8 = 28,
+KEY_NUM9 = 25,
+KEY_NUM0 = 29;
 
 @implementation InputController
 
 static NSArray* myCandidates;
 
 -(id)initWithServer:(IMKServer *)server delegate:(id)delegate client:(id)inputClient {
-    // Set the string for the subcandidates dropdown
-    // I do it during initialization, assuming just one subCandidates instance
-    // but, of course, it could be dynamic as well
-    _subCandidateString = @"SubCandidates HERE";
     myCandidates = @[@"---", @"---"];
     return [super initWithServer:server delegate:delegate client:inputClient];
 }
@@ -100,7 +105,8 @@ static NSArray* myCandidates;
     
     NSLog(@"ime log keyCode: %ld characters: %@", keyCode, characters);
     if(keyCode == KEY_RETURN){
-        if (hasInputedText) {
+        if ([self originalBuffer] && [[self originalBuffer] length]) {
+            [self setComposedBuffer: myCandidates[0]];
             [self commitComposition:sender];
             return YES;
         }
@@ -117,6 +123,17 @@ static NSArray* myCandidates;
         // If no candidate is selected please choose the first canidate automatically
         else if ([self originalBuffer] && [[self originalBuffer] length]) {
             [self setComposedBuffer: myCandidates[0]];
+            [self commitComposition:sender];
+            return YES;
+        }
+        return NO;
+    }
+    
+    // Select and commit a candidate when a number key is pressed
+    if ([self isNumberKey:keyCode modifiers:modifiers]){
+        if ([self originalBuffer] && [[self originalBuffer] length]) {
+            char ch = [characters characterAtIndex:0];
+            [self setComposedBuffer: myCandidates[(ch - '0') - 1]];
             [self commitComposition:sender];
             return YES;
         }
@@ -164,9 +181,9 @@ static NSArray* myCandidates;
               NSLog(@"Data received: %@", responseStr);
               NSArray *predictions = jsonDict[@"predictions"];
               NSMutableArray* results = [[NSMutableArray alloc] init];
-              for ( NSDictionary *pred in predictions )
+              for ( NSString *pred in predictions )
               {
-                    [results addObject: pred];
+                    [results addObject: [pred stringByReplacingOccurrencesOfString:@" " withString:@""]];
               }
               dispatch_async(dispatch_get_main_queue(), ^{
                   myCandidates = results;
@@ -177,7 +194,8 @@ static NSArray* myCandidates;
         [sharedCandidates updateCandidates];
         [sharedCandidates show:kIMKLocateCandidatesBelowHint];
         return YES;
-    }else{
+    }
+    else{
         if ([bufferedText length] > 0 ) {
             [self originalBufferAppend:characters client:sender];
             [self commitComposition: sender];
@@ -214,6 +232,46 @@ static NSArray* myCandidates;
     return NO;
 }
 
+// When the down arrow key is pressed
+- (void)moveDown:(id)sender
+{
+    [self selectCandidateByRowOffset:1];
+}
+
+// When the up arrow key is pressed
+- (void)moveUp:(id)sender
+{
+    [self selectCandidateByRowOffset:-1];
+}
+
+// Move to a candidate row specified by a certain offset
+// If that candidate is not located, move to first row
+- (void)selectCandidateByRowOffset:(NSUInteger) offset {
+    if (sharedCandidates) {
+        NSInteger candidateIdentifier = [sharedCandidates selectedCandidate];
+        NSInteger lineNumber = [sharedCandidates lineNumberForCandidateWithIdentifier:candidateIdentifier];
+        NSInteger nextIdentifier = [sharedCandidates candidateIdentifierAtLineNumber:lineNumber+offset];
+        if (nextIdentifier == NSNotFound) {
+            nextIdentifier = [sharedCandidates candidateIdentifierAtLineNumber:0];
+        }
+        [sharedCandidates selectCandidateWithIdentifier:nextIdentifier];
+    }
+}
+
+- (BOOL) isNumberKey:(NSInteger)keyCode modifiers:(NSUInteger)flags{
+    return (keyCode == KEY_NUM1
+            || keyCode == KEY_NUM2
+            || keyCode == KEY_NUM3
+            || keyCode == KEY_NUM4
+            || keyCode == KEY_NUM5
+            || keyCode == KEY_NUM6
+            || keyCode == KEY_NUM7
+            || keyCode == KEY_NUM8
+            || keyCode == KEY_NUM9
+            || keyCode == KEY_NUM0
+            || (flags & NSNumericPadKeyMask));
+}
+
 - (BOOL) shouldIgnoreKey:(NSInteger)keyCode modifiers:(NSUInteger)flags{
     return (keyCode == KEY_BACKSPACE
             || keyCode == KEY_MOVE_LEFT
@@ -243,7 +301,6 @@ static NSArray* myCandidates;
     [self setOriginalBuffer:@""];
     _insertionIndex = 0;
     [sharedCandidates hide];
-    [subCandidates hide];
 }
 
 -(NSMutableString*)composedBuffer{
@@ -265,8 +322,6 @@ static NSArray* myCandidates;
     return _originalBuffer;
 }
 
-
-
 -(void)showPreeditString:(NSString*)string{
     NSDictionary*       attrs = [self markForStyle:kTSMHiliteSelectedRawText atRange:NSMakeRange(0, [string length])];
     NSAttributedString* attrString;
@@ -282,29 +337,6 @@ static NSArray* myCandidates;
                    selectionRange:NSMakeRange(string.length, 0)
                  replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
 }
-
-//- (void)candidateSelectionChanged:(NSAttributedString*)candidateString{
-//    [self showPreeditString: [candidateString string]];
-//
-//    _insertionIndex = [candidateString length];
-//
-//    [self showSubCandidates: candidateString];
-//
-//}
-//
-//-(void)showSubCandidates:(NSAttributedString*)candidateString{
-//    NSInteger candidateIdentifier = [sharedCandidates selectedCandidate];
-//    NSInteger subCandidateStringIdentifier = [sharedCandidates candidateStringIdentifier: candidateString];
-//
-//    NSArray* subList =  @[@"subcand", @"This works great!"];
-//    [subCandidates setCandidateData: subList];
-//    NSRect currentFrame = [sharedCandidates candidateFrame];
-//    NSPoint windowInsertionPoint = NSMakePoint(NSMaxX(currentFrame), NSMaxY(currentFrame));
-//    [subCandidates setCandidateFrameTopLeft:windowInsertionPoint];
-//    [sharedCandidates attachChild:subCandidates toCandidate:(NSInteger)candidateIdentifier type:kIMKSubList];
-//    [sharedCandidates showChild];
-//}
-
 
 -(void)originalBufferAppend:(NSString*)string client:(id)sender{
     NSMutableString* buffer = [self originalBuffer];
