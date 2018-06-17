@@ -165,22 +165,10 @@ static NSArray* myCandidates;
               dispatch_async(dispatch_get_main_queue(), ^{
                   myCandidates = results;
                   [sharedCandidates updateCandidates];
-                  
-                  
               });
-              
-              
-              
-              //myCandidates = results;
-              //[sharedCandidates setCandidateData:@[@"`candidates:` method", @"This works great!"]];
-
-              //[sharedCandidates updateCandidates];
-              //[sharedCandidates show:kIMKLocateCandidatesBelowHint];
           }] resume];
         
-        //myCandidates = @[@"`candidates:` method", @"This works great!"];
         [sharedCandidates updateCandidates];
-        
         [sharedCandidates show:kIMKLocateCandidatesBelowHint];
         return YES;
     }else{
@@ -193,7 +181,6 @@ static NSArray* myCandidates;
             return NO;
         }
     }
-    
     return NO;
 }
 
@@ -333,60 +320,11 @@ static NSArray* myCandidates;
 
 - (NSArray*)candidates:(id)sender{
     NSString* buffer = [[self originalBuffer] lowercaseString];
-    //NSArray* result = @[];
     if(buffer && buffer.length > 0){
-        NSLog(@"display candidate window");
-        
-        
-       // [NSThread sleepForTimeInterval:2.000];
-        
         return myCandidates;
-        //return @[@"`candidates:` method", @"This works poorly!"];
-        //result = [self querySqliteDb: buffer];
-        // Do some shit on the wire
-//
-              //result = [NSMutableArray arrayWithArray: filtered];
-              //    while ([rs next]) {
-              //        ;
-              //    }
-              //    
-              //    return [NSMutableArray arrayWithArray: filtered];;
-              
-              
-              
-              //[dataServer setCandidates:predictions];
-              //[self heChangePage];
-              
-              //self.candidateArray = predictions;
-              
-              //[self heChangePage];
-              // These methods need to be called somewhere
-              //[dataServer setCandidates:predictions];
-              //[self heChangePage];
-              
-              
-              //[self heChangePage];
-              //[self displayTypedString:currentClient];
-
-              
-              
-         // }] resume];
     }
-
-    //return result;
+    return @[];
 }
-
-//-(NSArray*)querySqliteDb:(NSString*)key{
-//    NSMutableArray* filtered = [[NSMutableArray alloc] init];
-//
-//    NSString* sql = [NSString stringWithFormat: @"select value from mapping  where key like '%@%@' limit 50", key, @"%"];
-//    FMResultSet *rs = [db executeQuery: sql];
-//    while ([rs next]) {
-//        [filtered addObject: [rs stringForColumn:@"value"]];
-//    }
-//
-//    return [NSMutableArray arrayWithArray: filtered];;
-//}
 
 - (void)candidateSelected:(NSAttributedString*)candidateString{
     NSString* originalBuff = [NSString stringWithString:[self originalBuffer]];
