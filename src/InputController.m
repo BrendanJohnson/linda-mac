@@ -89,6 +89,7 @@ static NSArray* myCandidates;
     
     NSString* bufferedText = [self originalBuffer];
     Boolean* hasInputedText = bufferedText && [bufferedText length] > 0;
+    
     if(keyCode == KEY_DELETE){
         if (hasInputedText) {
             return [self deleteBackward:sender];
@@ -108,9 +109,14 @@ static NSArray* myCandidates;
     
     if(keyCode == KEY_SPACE){
         NSAttributedString* selectedCandidateString = [sharedCandidates selectedCandidateString];
-        if (hasInputedText && selectedCandidateString) {
-            NSLog(@"selectedCandidateString:%@", selectedCandidateString);
+        if ([self originalBuffer] && [[self originalBuffer] length] && selectedCandidateString) {
             [self setComposedBuffer: [[sharedCandidates selectedCandidateString] string]];
+            [self commitComposition:sender];
+            return YES;
+        }
+        // If no candidate is selected please choose the first canidate automatically
+        else if ([self originalBuffer] && [[self originalBuffer] length]) {
+            [self setComposedBuffer: myCandidates[0]];
             [self commitComposition:sender];
             return YES;
         }
@@ -311,7 +317,6 @@ static NSArray* myCandidates;
     NSMutableString*		buffer = [self originalBuffer];
     [buffer appendString: string];
 }
-
 
 -(void)setOriginalBuffer:(NSString*)string{
     NSMutableString*		buffer = [self originalBuffer];
