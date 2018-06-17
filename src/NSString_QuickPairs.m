@@ -1,0 +1,19 @@
+//
+//  NSString_QuickPairs.m
+//  hallelujah
+//
+//  Created by Brendan Johnson on 17/6/18.
+//
+
+#import <Foundation/Foundation.h>
+#import "NSString_QuickPairs.h"
+
+@implementation NSString (NSString_QuickPairs)
+-(NSString *) quickPairs{
+    NSMutableArray* pairs = [[NSMutableArray alloc] init];
+    for (NSInteger charIdx=0; charIdx<self.length; charIdx+=2) {
+        [pairs addObject:[self substringWithRange:NSMakeRange(charIdx, MIN(2,self.length-charIdx))]];
+    }
+    return [pairs componentsJoinedByString:@" "];
+}
+@end
