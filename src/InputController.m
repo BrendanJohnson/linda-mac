@@ -153,44 +153,7 @@ static NSArray* myCandidates;
     char ch = [characters characterAtIndex:0];
     if( (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ){
         [self originalBufferAppend:characters client:sender];
-        // Implementation of special logic
-        NSString *baseUrl = @"http://35.197.178.89";
-        NSString *targetUrl = [NSString stringWithFormat:@"%@/api", baseUrl];
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        NSDictionary *tmp = [[NSDictionary alloc] initWithObjectsAndKeys:
-                             [[self originalBuffer] quickPairs], @"input_keys",
-                             nil];
-        NSError *error;
-        NSData *postData = [NSJSONSerialization dataWithJSONObject:tmp options:0 error:&error];
-
-        [request setHTTPBody:postData];
-        [request setHTTPMethod:@"POST"];
-        [request setURL:[NSURL URLWithString:targetUrl]];
-        [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
-          ^(NSData * _Nullable data,
-            NSURLResponse * _Nullable response,
-            NSError * _Nullable error) {
-
-              NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-
-              NSError *jsonError;
-              NSMutableDictionary *jsonDict = [NSJSONSerialization
-                                               JSONObjectWithData:data
-                                               options:NSJSONReadingMutableContainers
-                                               error:&jsonError];
-              NSLog(@"Data received: %@", responseStr);
-              NSArray *predictions = jsonDict[@"predictions"];
-              NSMutableArray* results = [[NSMutableArray alloc] init];
-              for ( NSString *pred in predictions )
-              {
-                    [results addObject: [pred stringByReplacingOccurrencesOfString:@" " withString:@""]];
-              }
-              dispatch_async(dispatch_get_main_queue(), ^{
-                  myCandidates = results;
-                  [sharedCandidates updateCandidates];
-              });
-          }] resume];
-        
+        [self fetchCandidatesFromServer];
         [sharedCandidates updateCandidates];
         [sharedCandidates show:kIMKLocateCandidatesBelowHint];
         return YES;
@@ -222,8 +185,7 @@ static NSArray* myCandidates;
         [self showPreeditString: convertedString];
         
         if(convertedString && convertedString.length > 0){
-            [sharedCandidates updateCandidates];
-            [sharedCandidates show:kIMKLocateCandidatesBelowHint];
+            [self fetchCandidatesFromServer];
         }else{
             [self reset];
         }
@@ -256,6 +218,46 @@ static NSArray* myCandidates;
         }
         [sharedCandidates selectCandidateWithIdentifier:nextIdentifier];
     }
+}
+
+- (void)fetchCandidatesFromServer {
+    // Implementation of special logic
+    NSString *baseUrl = @"http://35.197.178.89";
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/api", baseUrl];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    NSDictionary *tmp = [[NSDictionary alloc] initWithObjectsAndKeys:
+                         [[self originalBuffer] quickPairs], @"input_keys",
+                         nil];
+    NSError *error;
+    NSData *postData = [NSJSONSerialization dataWithJSONObject:tmp options:0 error:&error];
+    
+    [request setHTTPBody:postData];
+    [request setHTTPMethod:@"POST"];
+    [request setURL:[NSURL URLWithString:targetUrl]];
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
+      ^(NSData * _Nullable data,
+        NSURLResponse * _Nullable response,
+        NSError * _Nullable error) {
+          
+          NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+          
+          NSError *jsonError;
+          NSMutableDictionary *jsonDict = [NSJSONSerialization
+                                           JSONObjectWithData:data
+                                           options:NSJSONReadingMutableContainers
+                                           error:&jsonError];
+          NSLog(@"Data received: %@", responseStr);
+          NSArray *predictions = jsonDict[@"predictions"];
+          NSMutableArray* results = [[NSMutableArray alloc] init];
+          for ( NSString *pred in predictions )
+          {
+              [results addObject: [pred stringByReplacingOccurrencesOfString:@" " withString:@""]];
+          }
+          dispatch_async(dispatch_get_main_queue(), ^{
+              myCandidates = results;
+              [sharedCandidates updateCandidates];
+          });
+      }] resume];
 }
 
 - (BOOL) isNumberKey:(NSInteger)keyCode modifiers:(NSUInteger)flags{
