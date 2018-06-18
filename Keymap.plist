@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>a</key>
+	<string>日</string>
+	<key>b</key>
+	<string>月</string>
+	<key>c</key>
+	<string>金</string>
+	<key>d</key>
+	<string>木</string>
+	<key>e</key>
+	<string>水</string>
+	<key>f</key>
+	<string>火</string>
+	<key>g</key>
+	<string>土</string>
+	<key>h</key>
+	<string>竹</string>
+	<key>i</key>
+	<string>戈</string>
+	<key>j</key>
+	<string>十</string>
+	<key>k</key>
+	<string>大</string>
+	<key>l</key>
+	<string>中</string>
+	<key>m</key>
+	<string>一</string>
+	<key>n</key>
+	<string>弓</string>
+	<key>o</key>
+	<string>人</string>
+	<key>p</key>
+	<string>心</string>
+	<key>q</key>
+	<string>手</string>
+	<key>r</key>
+	<string>口</string>
+	<key>s</key>
+	<string>尸</string>
+	<key>t</key>
+	<string>廿</string>
+	<key>u</key>
+	<string>山</string>
+	<key>v</key>
+	<string>女</string>
+	<key>w</key>
+	<string>田</string>
+	<key>x</key>
+	<string>難</string>
+	<key>y</key>
+	<string>卜</string>
+	<key>z</key>
+	<string>重</string>
+</dict>
+</plist>

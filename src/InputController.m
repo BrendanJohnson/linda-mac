@@ -334,10 +334,36 @@ static NSArray* myCandidates;
     }else{
         attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
     }
+    NSString* cangjieString = [self transformToCangjieRadicals:string];
     
-    [_currentClient setMarkedText:attrString
-                   selectionRange:NSMakeRange(string.length, 0)
+    [_currentClient setMarkedText:cangjieString
+                   selectionRange:NSMakeRange(cangjieString.length, 0)
                  replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
+}
+
+-(NSString*)transformToCangjieRadicals:(NSString*)string{
+    NSMutableArray *cangjieRadicals = [NSMutableArray array];
+    NSDictionary *keydict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Keymap" ofType:@"plist"]];
+    
+    // Range of 32-bit buffer
+    NSRange range = { 0, 32 };
+    NSUInteger end = [string length];
+    while (range.location < end)
+    {
+        unichar buffer[32]; // 32-bit buffer
+        if (range.location + range.length > end)
+        {
+            range.length = end - range.location;
+        }
+        [string getCharacters: buffer range: range];
+        range.location += 32;
+        for (unsigned i=0 ; i<range.length ; i++)
+        {
+            unichar c = buffer[i];
+            [cangjieRadicals addObject: [keydict valueForKey:[NSString stringWithFormat:@"%c", c]]];
+        }
+    }
+    return [cangjieRadicals componentsJoinedByString:@""];
 }
 
 -(void)originalBufferAppend:(NSString*)string client:(id)sender{

@@ -17,6 +17,7 @@
 		A789C96920D6331F0067745D /* NSString_QuickPairs.m in Sources */ = {isa = PBXBuildFile; fileRef = A789C96820D6331F0067745D /* NSString_QuickPairs.m */; };
 		A79C799420D62AFC00B1613D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A79C799320D62ADA00B1613D /* Info.plist */; };
 		A79C799620D62BA100B1613D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A79C799520D62BA100B1613D /* Info.plist */; };
+		A7DB313520D7A46200B688D3 /* Keymap.plist in Resources */ = {isa = PBXBuildFile; fileRef = A7DB313420D7A46200B688D3 /* Keymap.plist */; };
 		A7F3835420D5FDC7000E9435 /* linda.icns in Resources */ = {isa = PBXBuildFile; fileRef = A7F3835320D5FDC7000E9435 /* linda.icns */; };
 		E93074B70A5C264700470842 /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E93074B60A5C264700470842 /* InputMethodKit.framework */; };
 		F1CDA2AF1B551A55005086C6 /* InputController.h in Sources */ = {isa = PBXBuildFile; fileRef = F1CDA2A41B55180A005086C6 /* InputController.h */; };
@@ -40,6 +41,7 @@
 		A79C799120D628FB00B1613D /* linda-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "linda-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A79C799220D62ADA00B1613D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/Info.plist; sourceTree = "<group>"; };
 		A79C799520D62BA100B1613D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A7DB313420D7A46200B688D3 /* Keymap.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keymap.plist; sourceTree = "<group>"; };
 		A7F3835020D5E6ED000E9435 /* NSString_QuickPairs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSString_QuickPairs.h; path = src/NSString_QuickPairs.h; sourceTree = "<group>"; };
 		A7F3835320D5FDC7000E9435 /* linda.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = linda.icns; sourceTree = "<group>"; };
 		E93074B60A5C264700470842 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = /System/Library/Frameworks/InputMethodKit.framework; sourceTree = "<absolute>"; };
@@ -95,6 +97,7 @@
 		29B97314FDCFA39411CA2CEA /* NumberInput */ = {
 			isa = PBXGroup;
 			children = (
+				A7DB313420D7A46200B688D3 /* Keymap.plist */,
 				A79C799520D62BA100B1613D /* Info.plist */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -196,6 +199,7 @@
 				A7F3835420D5FDC7000E9435 /* linda.icns in Resources */,
 				A7505A4020D6246900A38EB5 /* linda_16.png in Resources */,
 				A79C799620D62BA100B1613D /* Info.plist in Resources */,
+				A7DB313520D7A46200B688D3 /* Keymap.plist in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
