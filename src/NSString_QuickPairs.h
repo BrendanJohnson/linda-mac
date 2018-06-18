@@ -1,6 +1,6 @@
 //
 //  NSString_QuickPairs.h
-//  hallelujah
+//  linda-mac
 //
 //  Created by Brendan Johnson on 17/6/18.
 //

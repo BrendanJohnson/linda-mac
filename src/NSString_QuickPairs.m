@@ -1,6 +1,6 @@
 //
 //  NSString_QuickPairs.m
-//  hallelujah
+//  linda-mac
 //
 //  Created by Brendan Johnson on 17/6/18.
 //
@@ -14,6 +14,14 @@
     for (NSInteger charIdx=0; charIdx<self.length; charIdx+=2) {
         [pairs addObject:[self substringWithRange:NSMakeRange(charIdx, MIN(2,self.length-charIdx))]];
     }
-    return [pairs componentsJoinedByString:@" "];
+    NSString* joinedPairs = [pairs componentsJoinedByString:@" "];
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern: @"(z)"
+                                                                           options: NSRegularExpressionCaseInsensitive
+                                                                             error: nil];
+    
+    return [regex stringByReplacingMatchesInString: joinedPairs
+                                                          options: 0
+                                                            range: NSMakeRange(0, [joinedPairs length])
+                                                     withTemplate: @""];
 }
 @end
